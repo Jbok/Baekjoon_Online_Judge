@@ -1,0 +1,4 @@
+## Ignore execute file ##
+
+*.exe
+*.out
