@@ -1,7 +1,4 @@
 #include <stdio.h>
-#include <iostream>
-
-using namespace std;
 
 int main(){
 
@@ -15,7 +12,7 @@ int main(){
 
     int n;
     while(1){
-        cin >> n;
+        scanf("%d" ,&n);
 
         if (n == 0){
             return 0;
