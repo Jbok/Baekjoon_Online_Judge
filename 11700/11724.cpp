@@ -5,7 +5,7 @@ using namespace std;
 int arr[1001][1001] = { { 0, }, };
 int visit[1001] = { 0, };
 
-void dfs(int start, int n)
+void bfs(int start, int n)
 {
     if (visit[start])
          return;
@@ -15,7 +15,7 @@ void dfs(int start, int n)
     for (int i = 1; i <= n; i++)
     {
         if (arr[start][i] == 1)
-            dfs(i, n);
+            bfs(i, n);
     }
 }
 
@@ -39,7 +39,7 @@ int main()
     {
         if (!visit[i])
         {
-            dfs(i, n);
+            bfs(i, n);
             max++;
         }
     }
