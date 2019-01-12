@@ -1,5 +1,4 @@
 #include <iostream>
-#include <list>
 
 using namespace std;
 
@@ -11,26 +10,29 @@ int main()
 
     int *arr = new int[n+1];
 
-    list<int> lt;
-
-    for (int i = 1; i <= n; i++)
+    for (int i = 0; i < n+1; i++)
     {
-        arr[i] = i;
-        lt.push_back(i);
+        arr[i] = 0;
     }
 
-    int start, end, temp;
+    int x, y;
     for (int i = 0; i < m; i++)
     {
-        cin >> start >> end;
-        temp = arr[start];
-
-        for (int i = start + 1; i <= end; i++)
-        {
-            lt.remove(i);
-        }
+        cin >> x >> y;
+        arr[x]++;
+        arr[y]--;
     }
 
-    cout << lt.size() << endl;
+    int result = 0;
+    int temp = 0;
+    for (int i = 1; i < n+1; i++)
+    {
+        temp += arr[i];
+
+        if (temp == 0)
+            result++;
+    }
+
+    cout << result << endl;
 
 }
