@@ -1,11 +1,13 @@
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
-int arr[2000][2000] = { { 0, }, };
+int check[2001] = { 0, };
+vector<vector<int>> v;
 int flag = 0;
 
-void dfs(int n, int start, int depth, int *check)
+void dfs(int n, int start, int depth)
 {
     if (depth == 4)
     {
@@ -13,16 +15,18 @@ void dfs(int n, int start, int depth, int *check)
         return;
     }
     
-    for (int i = 0; i < n; i++)
+    check[start] = 1;
+    for (int i = 0; i < v[start].size(); i++)
     {
-        if (check[i] == 0 && arr[start][i] == 1)
+        int next = v[start][i];
+
+        if (check[next] == 0)
         {
-            check[i] = 1;
-            dfs(n, i, depth+1, check);
-            check[i] = 0;
+            dfs(n, next, depth+1);
         }
     }
 
+    check[start] = 0;
 }
 
 int main()
@@ -30,26 +34,24 @@ int main()
     int n, m;
     cin >> n >> m;
 
+    v.resize(n);
+
     int x, y;
     for (int i = 0; i < m; i++)
     {
         cin >> x >> y;
-        arr[x][y] = 1;
-        arr[y][x] = 1;
+        v[x].push_back(y);
+        v[y].push_back(x);
     }
-
-    int check[2000] = { 0, };
 
     for (int i = 0; i < n; i++)
     {
-        check[i] = 1;
-        dfs(n, i, 0, check);
+        dfs(n, i, 0);
         if (flag)
         {
             printf("1");
             return 0;
         }
-        check[i] = 0;
     }
 
     printf("0");
