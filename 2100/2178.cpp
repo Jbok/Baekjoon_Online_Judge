@@ -4,10 +4,16 @@
 
 using namespace std;
 
+struct node
+{
+    int n;
+    int m;
+    int check = 0;
+}
 
 int arr[102][102] = { { 0, }, };
-vector< vector<int> > v;
-deque<int> dq;
+vector< vector<node> > v;
+deque<node> dq;
 
 int main()
 {
@@ -38,32 +44,32 @@ int main()
         {
             if (arr[i][j] == 1)
             {
-                int now = i * (m + 1) + j;
-                int next;
+                node now = {1, 1};
+                node next;
                 if (arr[i+1][j] == 1)
                 {
-                    next = (i+1) * (m + 1) + j;
+                    next = {now.n + 1, now.m};
                     v[now].push_back(next);
                     v[next].push_back(now);
                 }
 
                 if (arr[i-1][j] == 1)
                 {
-                    next = (i-1) * (m + 1) + j;
+                    next = {now.n - 1, now.m};
                     v[now].push_back(next);
                     v[next].push_back(now);
                 }
 
                 if (arr[i][j+1] == 1)
                 {
-                    next = (i) * (m + 1) + j + 1;
+                    next = {now.n, now.m + 1};
                     v[now].push_back(next);
                     v[next].push_back(now);
                 }
 
                 if (arr[i][j-1] == 1)
                 {
-                    next = (i) * (m + 1) + j - 1;
+                    next = {now.n, now.m - 1};
                     v[now].push_back(next);
                     v[next].push_back(now);
                 }
@@ -72,7 +78,7 @@ int main()
     }
 
     // bfs
-    int now = m + 2;
+    int node = v[{1, 1, 0}];
     int result = 1;
 
     dq.push_back(now);
