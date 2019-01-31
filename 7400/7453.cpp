@@ -4,10 +4,49 @@
 
 using namespace std;
 
-int arr[4000] = { 0, };
-int brr[4000] = { 0, };
-int crr[4000] = { 0, };
-int drr[4000] = { 0, };
+long long arr[4000] = { 0, };
+long long brr[4000] = { 0, };
+long long crr[4000] = { 0, };
+long long drr[4000] = { 0, };
+
+long long arr1[16000005] = { 0, };
+long long arr2[16000005] = { 0, };
+
+int LowerBound(long long arr[], int target, int size)
+{
+    int mid, start, end;
+    start = 0;
+    end = size - 1;
+
+    while (end > start)
+    {
+        mid = (start + end) / 2;
+        if (arr[mid] >= target)
+            end = mid;
+        else
+            start = mid + 1;
+    }
+
+    return end;
+}
+
+int UpperBound(long long arr[], int target, int size)
+{
+    int mid, start, end;
+    start = 0;
+    end = size - 1;
+
+    while (end > start)
+    {
+        mid = (start + end) / 2;
+        if (arr[mid] > target)
+            end = mid;
+        else
+            start = mid + 1;
+    }
+
+    return end;
+}
 
 int main()
 {
@@ -22,53 +61,93 @@ int main()
         cin >> drr[i];
     }
 
-    map<int, int> m1, m2;
-
-    int temp = 0;
     int cnt = 0;
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < n; j++)
         {
-            int temp1 = arr[i] + brr[j];
-            int temp2 = crr[i] + drr[j];
-
-            int tempCnt;
-            tempCnt = m1.count(temp1);
-            if (tempCnt != 0)
-            {
-                m1[temp1] += 1;
-            }
-            else
-            {
-                m1.insert(make_pair(temp1, 1));
-            }
-
-            tempCnt = m2.count(temp2);
-            if (tempCnt != 0)
-            {
-                m2[temp2] += 1;
-            }
-            else
-            {
-                m2.insert(make_pair(temp2, 1));
-            }
+            arr1[cnt] = arr[i] + brr[j];
+            arr2[cnt++] = crr[i] + drr[j];
         }
     }
 
+    sort(arr1, arr1 + cnt);
+    sort(arr2, arr2 + cnt);
 
-    int result = 0;
-    for (map<int, int>::iterator iter = m1.begin(); iter != m1.end(); iter++)
+    long long result = 0;
+    int arr2_cnt = cnt - 1;
+    int before = 0;
+    int beforeTarget = 0;
+
+    for (int i = 0; i < cnt; i++)
     {
-        int target = iter->first;
+        int target = arr1[i] * -1;
 
-        int tempCount = m2.count(target * -1);
-        if (tempCount != 0)
+
+        if ( i != 0 )
         {
-            result += iter->second * m2[target * -1];
-        }
+            if (beforeTarget == target)
+            {
+                result += before;
+            }
+            else
+            {
+                int temp = 0;
+                while (1)
+                {
+                    if (arr2_cnt < 0)
+                        break;
 
+                    int target2 = arr2[arr2_cnt];
+
+                    if (target2 < target)
+                        break;
+
+                    else if (target2 == target)
+                    {
+                        temp++;
+                        arr2_cnt--;
+                    }
+                    else if (target2 > target)
+                    {
+                        arr2_cnt--;
+                    }
+                }    
+                result += temp;
+                before = temp;
+                beforeTarget = target;   
+            }
+
+        }
+        else
+        {
+            int temp = 0;
+            while (1)
+            {
+                if (arr2_cnt < 0)
+                    break;
+
+                int target2 = arr2[arr2_cnt];
+
+                if (target2 < target)
+                    break;
+
+                else if (target2 == target)
+                {
+                    temp++;
+                    arr2_cnt--;
+                }
+                else if (target2 > target)
+                {
+                    arr2_cnt--;
+                }
+            }    
+            result += temp;
+            before = temp;
+            beforeTarget = target;
+        }
+        
     }
 
-    printf("%d\n", result);
+    printf("%ld\n", result);
 }
