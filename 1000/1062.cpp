@@ -9,11 +9,6 @@ int numOfReadableWords(int n, int k, int *alphabet, int *max)
 {
     int result = 0;
 
-    for (int i = 0; i < k; i++)
-    {
-
-    }
-
     for (int i = 0; i < n; i++)
     {
         int flag = 0;
