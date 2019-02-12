@@ -1,32 +1,56 @@
 #include <iostream>
-#include <algorithm>
-#include <functional>
 
 using namespace std;
-
-int arr[100001] = { 0, };
 
 int main()
 {
     int n, s;
     cin >> n >> s;
 
+    int *arr = new int[n];
+
     for (int i = 0; i < n; i++)
     {
         cin >> arr[i];
     }
 
-    sort(arr, arr + n, greater<int>());    
+    int min = 111111;
 
-    int sum = 0;
-    for (int i = 0; i < n; i++)
+    int start = 0;
+    int end = 0;
+
+    int sum = arr[start];
+
+    while (1)
     {
-        sum += arr[i];
+        
+        while (1)
+        {
+            if (end == n)
+                break;
 
-        if (sum >= s){
-            printf("%d\n", i+1);
-            break;
+            if (sum >= s)
+            {
+                if (min > end - start + 1)
+                {
+                    min = end - start + 1;
+                }
+                break;
+            }
+
+            sum += arr[++end];
         }
+
+        sum -= arr[start++];
+        if (start == n)
+            break;
     }
-    printf("0\n");
+
+    if (min == 111111)
+        printf("0\n");
+    else
+    {
+        printf("%d\n", min);
+    }
+    
 }
