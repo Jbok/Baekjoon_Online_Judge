@@ -1,18 +1,9 @@
 #include <iostream>
-#include <deque>
 
 using namespace std;
 
-typedef struct node
-{
-    int x;
-    int y;
-    int value;
-}Node;
-
 int arr[1000][1000] = { { 0, }, };
 int value[1000][1000] = { { 0, }, };
-int dir[2][2] = { { 1, 0 }, { 0, 1} };
 
 int main()
 {
@@ -29,37 +20,40 @@ int main()
         }
     }
 
-    Node start = { 0, 0, arr[0][0] };
+    value[0][0] = arr[0][0];
 
-    deque<Node> dq;
-    dq.push_back(start);
-
-    while (1)
+    for (int i = 1; i < m; i++)
     {
-        if (dq.empty())
-            break;
-        
-        Node now = dq.front();
-        dq.pop_front();
-        
-        if (max < now.value)
-            max = now.value;
+        value[0][i] = value[0][i-1] + arr[0][i];
+    }
 
-        for (int i = 0; i < 2; i++)
+    for (int i = 1; i < n; i++)
+    {
+        value[i][0] = value[i-1][0] + arr[i][0];
+    }
+
+    for (int i = 1; i < n; i++)
+    {
+        for (int j = 1; j < m; j++)
         {
-            Node next;
-            int nextX = now.x + dir[i][0];
-            int nextY = now.y + dir[i][1];
+            int v1 = arr[i][j] + value[i][j-1];
+            int v2 = arr[i][j] + value[i-1][j];
 
-            if (nextX < n && nextY < m)
-            {
-                int nextV = now.value + arr[nextX][nextY];
-                next = { now.x + dir[i][0], now.y + dir[i][1], nextV };
-                dq.push_back(next);
-            }
+            value[i][j] = v1 > v2 ? v1 : v2;
         }
     }
 
-    printf("%d\n", max);
+    // printf("\n\n");
+    // for (int i = 0; i < n; i++)
+    // {
+    //     for (int j = 0; j < m; j++)
+    //     {
+    //         printf("%2d ", value[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+
+    printf("%d\n", value[n-1][m-1]);
+
 
 }
