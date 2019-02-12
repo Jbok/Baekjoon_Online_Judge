@@ -3,13 +3,9 @@
 
 using namespace std;
 
-int arr[100][100] = { { 0, }, };
+int arr[100][100] = { 0, };
+long long dp[100][100] = { 1, };
 
-typedef struct node
-{
-    int x;
-    int y;
-}Node;
 
 int main()
 {
@@ -24,56 +20,40 @@ int main()
         }
     }
 
-    deque<Node> dq;
 
-    int jump = 0 + arr[0][0];
-
-    if (jump < n)
+    for (int i = 0; i < n; i++)
     {
-        dq.push_back( { jump, 0 } );
-        dq.push_back( { 0, jump } );
-    }
-
-    int result = 0;
-
-    while (1)
-    {
-        if (dq.empty())
-            break;
-
-        Node now = dq.front();
-        dq.pop_front();
-
-        jump = arr[now.y][now.x];
-
-        if (jump == 0)
+        for (int j = 0; j < n; j++)
         {
-            result++;
-        }
-        else
-        {
-            for (int i = 0; i < 2; i++)
+            int jump = arr[i][j];
+
+            if (jump == 0)
+                break;
+
+            if (i + jump < n)
+            {   
+                // printf("i: %d j: %d jump: %d\n", i, j, jump);
+                dp[i+jump][j] += dp[i][j];
+            }
+            
+            if (j + jump < n)
             {
-                Node next;
-                if (i == 0)
-                {
-                    if (now.y + jump < n)
-                    {
-                        dq.push_back( { now.x, now.y + jump } );
-                    }
-                }
-                else if (i == 1)
-                {
-                    if (now.x + jump < n)
-                    {
-                        dq.push_back( { now.x + jump, now.y } );
-                    }
-                }
+                // printf("i: %d j: %d jump:%d\n", i, j, jump);
+                dp[i][j+jump] += dp[i][j];
             }
         }
-        
-        
     }
 
-    printf("%d\n", result);
+    // printf("\n");
+    // printf("\n");
+    // for (int i = 0; i < n; i++)
+    // {
+    //     for (int j = 0; j < n; j++)
+    //     {
+    //         printf("%d ", dp[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+    printf("%ld\n", dp[n-1][n-1]);
+    
 }
