@@ -1,85 +1,55 @@
 #include <iostream>
-#include <vector>
 #include <deque>
 
 using namespace std;
 
-typedef struct node
-{
-    int x;
-    int cnt;
-}Node;
-
-int arr[100001][3];
+int arr[100001] = { 0, };
 int check[100001] = { 0, };
 
 int main()
 {
+	int n, k;
+	cin >> n >> k;
 
-    int n, k;
-    cin >> n >> k;
+	deque<pair<int, int>> dq;
+	dq.push_back({ n, 0 });
 
+	check[n] = 1;
 
-    for (int i = 0 ; i <= 100000; i++)
-    {
-        for (int dir = 0 ; dir < 3; dir++)
-        {
-            int next;
-            if (dir == 0)
-            {
-                next = i + 1;
-            }
-            else if(dir == 1)
-            {
-                next = i - 1;
-            }
-            else
-            {
-                next = i * 2;
-            }
+	while (1)
+	{
+		if (dq.empty())
+			break;
 
-            if (next >= 0 && next <= 100000)
-            {
-                arr[i][dir] = next;
-            }
-            else
-            {
-                arr[i][dir] = -1;
-            }
-        }
-    }
+		pair<int, int> Ptemp = dq.front();
+		int temp = Ptemp.first;
+		arr[temp] = Ptemp.second;
 
-    deque<Node> dq;
-    dq.push_back({ n, 0 });
-    check[n] = 1;
+		dq.pop_front();
 
-    while (1)
-    {
-        
-        Node now = dq.front();
-        dq.pop_front();
+		for (int i = 0; i < 3; i++)
+		{
+			int next;
+			if (i == 0)
+			{
+				next = temp - 1;
+			}
+			else if (i == 1)
+			{
+				next = temp + 1;
+			}
+			else
+			{
+				next = temp * 2;
+			}
 
-        if (now.x == k)
-        {
-            printf("%d", now.cnt);
-            break;
-        }
+			if (next >= 0 && next <= 100000 && check[next] == 0)
+			{
+				check[next] = 1;
+				dq.push_back({ next ,Ptemp.second + 1 });
+			}
+		}
+	}
 
-        for (int i = 0 ; i < 3; i++)
-        {
-            if (arr[now.x][i] >= 0)
-            {
-                Node next;
-                next = { arr[now.x][i], now.cnt + 1 };
-                
-                if (check[next.x] == 0)
-                {
-                    dq.push_back(next);
-                    check[next.x] = 1;
-                }
-            }
-        }
-
-    }
-
+	printf("%d\n", arr[k]);
 }
