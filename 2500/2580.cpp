@@ -1,100 +1,97 @@
 #include <iostream>
 #include <vector>
-#include <deque>
 
 using namespace std;
 
-typedef struct node
-{
-    int x;
-    int y;
-    int value;
-}Node;
+int board[10][10] = { 0, };
+int row[10][10];
+int col[10][10];
+int group[9][10];
 
-int xCheck[9][10] = { { 0, }, };
-int yCheck[9][10] = { { 0, }, };
-int sectorCheck[9][10] = { { 0, }, };
+vector<int> v;
+
+int flag = 1;
+
+void dfs(int idx)
+{
+	if (flag == 1)
+	{
+		if (idx == v.size())
+		{
+			for (int i = 1; i < 10; i++)
+			{
+				for (int j = 1; j < 10; j++)
+				{
+					printf("%d ", board[i][j]);
+				}
+				printf("\n");
+			}
+			flag = 0;
+			return;
+		}
+		else
+		{
+			//printf("idx: %d \n", idx);
+			int temp = v[idx];
+			int tR = (temp-1) / 9  + 1;
+			int tC = (temp-1) % 9 + 1;
+			int tGroupNum = ((tR - 1) / 3) * 3 + (tC - 1) / 3;
+
+			//printf("temp:%d tR:%d tC:%d tGroupNUm:%d\n", temp, tR, tC, tGroupNum);
+
+			for (int i = 1; i <= 9; i++)
+			{
+				if (row[tR][i] == 0 && col[tC][i] == 0 && group[tGroupNum][i] == 0)
+				{
+					//printf("	i: %d\n", i);
+					board[tR][tC] = i;
+					row[tR][i] = 1;
+					col[tC][i] = 1;
+					group[tGroupNum][i] = 1;
+					
+
+					dfs(idx+1);
+
+					board[tR][tC] = 0;
+					row[tR][i] = 0;
+					col[tC][i] = 0;
+					group[tGroupNum][i] = 0;
+				}
+			}
+		}
+	}
+}
+	
+
 
 int main()
 {
-    deque<Node> dqEmpty;
+	for (int i = 1; i < 10; i++)
+	{
+		for (int j = 1; j < 10; j++)
+		{
+			int temp;
+			scanf("%d", &temp);
 
-    int board[9][9];
+			if (temp == 0)
+			{
+				//printf("[i:%d , j:%d] value:%d \n", i, j, (i - 1) * 9 + j);
+				v.push_back((i - 1) * 9 + j);
+			}
 
-    for (int i = 0; i < 9; i++)
-    {
-        for (int j = 0; j < 9; j++)
-        {
-            cin >> board[i][j];
-            if (board[i][j] == 0)
-            {
-                dqEmpty.push_back({ j, i, 0 });
-            }
-            xCheck[j][board[i][j]] = 1;
-            yCheck[i][board[i][j]] = 1;
-            sectorCheck[((int)(i/3))*3 + j/3][board[i][j]] = 1;
-        }
-    }
+			board[i][j] = temp;
+			
+			row[i][temp] = 1;
+			col[j][temp] = 1;
 
-    vector<Node> store;
+			int groupNum = ((i - 1) / 3) * 3 + (j - 1) / 3;
+			group[groupNum][temp] = 1;
+		}
+	}
 
-    while (1)
-    {
+	//printf("v.size():%d\n", v.size());
 
-    // printf("start\n");    
-        if (dqEmpty.empty())
-            break;
-
-        Node now = dqEmpty.front();
-        dqEmpty.pop_front();
-
-        int flag = 1;
-
-        // printf("\nnow: [%d, %d] : %d\n", now.x, now.y, now.value);
-        for (int i = now.value + 1; i < 10; i++)
-        {
-            // printf("    %d / %d / %d \n", xCheck[now.x][i], yCheck[now.y][i], sectorCheck[((int)(now.y/3))*3 + (int)(now.x/3)][i]);
-            if (xCheck[now.x][i] == 0 && yCheck[now.y][i] == 0 && sectorCheck[((int)(now.y/3))*3 + (int)(now.x/3)][i] == 0)
-            {
-                xCheck[now.x][i] = 1;
-                yCheck[now.y][i] = 1;
-            
-                sectorCheck[((int)(now.y/3))*3 + (int)(now.x/3)][i] = 1;
-
-                board[now.y][now.x] = i;
-                now.value = i;
-
-                store.push_back(now);
-                // printf("store push back: %d %d %d\n", now.x, now.y, now.value);
-                flag = 0;
-                break;
-            }
-        }
-        //printf("    save value:%d flag:%d\n", now.value, flag);
-
-        if (flag == 1)
-        {
-            Node before = store.back();
-            dqEmpty.push_front({ now.x, now.y, 0 });
-            dqEmpty.push_front(before);
-            // printf("%d %d %d\n", before.x, before.y, before.value);
-            xCheck[before.x][before.value] = 0;
-            yCheck[before.y][before.value] = 0;
-            sectorCheck[((int)(before.y/3))*3 + before.x/3][before.value] = 0;
-            board[before.y][before.x] = 0;
-            store.pop_back();
-        }   
-    }
+	dfs(0);
 
 
-    for (int i = 0; i < 9; i++)
-    {
-        for (int j = 0; j < 9; j++)
-        {
-            printf("%d ", board[i][j]);
-        }
-        printf("\n");
-    }
-
-       
 }
