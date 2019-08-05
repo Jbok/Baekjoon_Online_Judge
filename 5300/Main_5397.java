@@ -3,8 +3,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Deque;
 import java.util.LinkedList;
-import java.util.List;
 
 public class Main_5397 {
 	public static void main(String[] args) throws NumberFormatException, IOException {
@@ -15,42 +15,43 @@ public class Main_5397 {
 		for (int tc = 0; tc <testCase; tc++) {
 			String str = br.readLine();
 			
-			List<Character> ll = new LinkedList<Character>();
+//			List<Character> ll = new LinkedList<Character>();
 //			HashMap<Character, V>
-			int idx = 0;
-			int len = 0;
+			
+			Deque<Character> dqLeft = new LinkedList<>();
+			Deque<Character> dqRight = new LinkedList<>();
+		
 			for (int i = 0; i < str.length(); i++) {
 				char c = str.charAt(i);
 //			for (char c : str.toCharArray()) {
 				switch (c) {
 				case '<':
-					if(idx > 0) {
-						idx--;
+					if (!dqLeft.isEmpty()) {
+						dqRight.addFirst(dqLeft.pollLast());
 					}
-					
 					break;
 				case '>':
-					if (idx < len) {
-						idx++;
+					if (!dqRight.isEmpty()) {
+						dqLeft.addLast(dqRight.pollFirst());
 					}
 					break;
 				case '-':
-					if (idx > 0) {
-						ll.remove(--idx);
-						len--;
+					if (!dqLeft.isEmpty()) {
+						dqLeft.pollLast();
 					}
 					break;
 				default:
-					ll.add(idx, c);
-					len++;
-					idx++;
+					dqLeft.addLast(c);
 					break;
 				}
 			}
 			
 			
 			
-			for (Character c : ll) {
+			for (Character c : dqLeft) {
+				bw.append(c);
+			}
+			for (Character c : dqRight) {
 				bw.append(c);
 			}
 			bw.append('\n');
